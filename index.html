@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+  <title>
+    lookatthebottom
+  </title>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&amp;family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#00FF41",
+              "background": "#0c0e17",
+              "surface": "#11131d",
+              "on-surface": "#f0f0fd",
+              "on-surface-variant": "#aaaab7",
+            },
+            fontFamily: {
+              "headline": ["Space Grotesk"],
+              "body": ["Manrope"],
+              "mono": ["monospace"]
+            },
+          },
+        },
+      }
+    </script>
+<style>
+      body {
+        background-color: #0c0e17;
+        position: relative;
+        overflow: hidden;
+      }
+      
+      /* Scanline Effect */
+      body::before {
+        content: " ";
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+        z-index: 100;
+        background-size: 100% 2px, 3px 100%;
+        pointer-events: none;
+      }
+
+      /* Subtle Glitch Animation */
+      @keyframes scanline {
+        0% { transform: translateY(-100%); }
+        100% { transform: translateY(100%); }
+      }
+      .scanline-move {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100px;
+        background: linear-gradient(to bottom, transparent, rgba(0, 255, 65, 0.05), transparent);
+        opacity: 0.1;
+        animation: scanline 8s linear infinite;
+        pointer-events: none;
+        z-index: 99;
+      }
+
+      .terminal-text {
+        text-shadow: 0 0 5px rgba(0, 255, 65, 0.5);
+      }
+      
+      .glitch-hover:hover {
+        animation: glitch 0.3s cubic-bezier(.25,.46,.45,.94) both infinite;
+      }
+
+      @keyframes glitch {
+        0% { transform: translate(0); }
+        20% { transform: translate(-2px, 2px); }
+        40% { transform: translate(-2px, -2px); }
+        60% { transform: translate(2px, 2px); }
+        80% { transform: translate(2px, -2px); }
+        100% { transform: translate(0); }
+      }
+    
+      @keyframes flicker-hint {
+        0%, 100% { opacity: 0.2; }
+        50% { opacity: 0.1; }
+        70% { opacity: 0.3; }
+        80% { opacity: 0.15; }
+      }
+      .animate-flicker-hint {
+        animation: flicker-hint 4s infinite;
+      }
+    </style>
+</head>
+<body class="text-on-surface font-mono selection:bg-primary selection:text-black min-h-screen flex items-center justify-center p-6">
+<div class="scanline-move"></div>
+<!-- Centered Portal Layout -->
+<div class="max-w-2xl w-full flex flex-col items-center text-center space-y-12 relative z-10">
+<!-- Breadcrumb / Header -->
+<header class="w-full text-left">
+<p class="text-primary/60 text-sm tracking-[0.3em] font-bold uppercase terminal-text">
+                /// arena_node_04 // chess
+            </p>
+<div class="h-px w-full bg-primary/20 mt-2"></div>
+</header>
+<!-- Main Content -->
+<main class="space-y-8 py-12">
+<div>
+<h1 class="text-5xl md:text-6xl font-headline font-black text-primary italic tracking-tighter mb-6 terminal-text">
+                    ???
+                </h1>
+</div>
+<!-- Main Action -->
+<div class="pt-4">
+<div class="mb-6 max-w-sm mx-auto"><input class="w-full bg-black/40 border border-primary/50 focus:border-primary text-primary placeholder:text-primary/30 font-mono text-center py-3 tracking-widest outline-none transition-all focus:shadow-[0_0_15px_rgba(0,255,65,0.2)] uppercase" placeholder="ENTER ACCESS CODE..." type="text"/></div><button class="px-12 py-4 bg-primary text-black font-headline font-black text-xl tracking-tighter hover:bg-white transition-all active:scale-95 glitch-hover shadow-[0_0_20px_rgba(0,255,65,0.3)]" id="join-btn">
+                    JOIN CHESS TOURNAMENT
+                </button><div class="mt-4 text-red-500 font-mono text-xs tracking-widest hidden terminal-text uppercase" id="error-message">INCORRECT CODE</div>
+</div>
+</main>
+<!-- Navigation Nodes -->
+<footer class="w-full pt-12">
+<div class="h-px w-full bg-primary/20 mb-8"></div>
+<div class="flex flex-wrap justify-center gap-8 md:gap-16">
+<a class="group flex flex-col items-center gap-2" href="#">
+<span class="text-primary text-xs tracking-widest uppercase">01</span>
+<span class="text-white group-hover:text-primary transition-colors text-lg font-headline font-bold italic">CHESS</span>
+<div class="h-1 w-full bg-primary scale-x-100 transition-transform"></div>
+</a>
+<a class="group flex flex-col items-center gap-2 opacity-50 hover:opacity-100 transition-opacity" href="#">
+<span class="text-on-surface-variant text-xs tracking-widest uppercase">02</span>
+<span class="text-on-surface-variant group-hover:text-white transition-colors text-lg font-headline font-bold italic line-through decoration-primary decoration-2">?!@#$?ll</span>
+<div class="h-1 w-full bg-primary scale-x-0 group-hover:scale-x-100 transition-transform"></div>
+</a>
+<a class="group flex flex-col items-center gap-2 opacity-50 hover:opacity-100 transition-opacity" href="#">
+<span class="text-on-surface-variant text-xs tracking-widest uppercase">03</span>
+<span class="text-on-surface-variant group-hover:text-white transition-colors text-lg font-headline font-bold italic line-through decoration-primary decoration-2">!$#%?!@#ll</span>
+<div class="h-1 w-full bg-primary scale-x-0 group-hover:scale-x-100 transition-transform"></div>
+</a>
+<a class="group flex flex-col items-center gap-2" href="#"><span class="text-primary text-xs tracking-widest uppercase">04</span><span class="text-white group-hover:text-primary transition-colors text-lg font-headline font-bold italic">???</span><div class="h-1 w-full bg-primary scale-x-100 transition-transform"></div></a></div>
+<div class="mt-16 text-[10px] text-primary/30 uppercase tracking-[0.5em] font-bold">
+                connection_stable // status_online
+            </div><div class="mt-4 text-[9px] text-primary/20 uppercase tracking-[0.3em] font-mono animate-flicker-hint">
+                DEEP_SCAN_REQUIRED: INSPECT_ELEMENT_FOR_LOGS
+            </div>
+</footer>
+</div>
+<script>
+  document.getElementById('join-btn').addEventListener('click', function() {
+    const errorMsg = document.getElementById('error-message');
+    errorMsg.classList.remove('hidden');
+    // Optional: Add a shake effect if desired, but request just asked for the message
+  });
+</script><!-- I want to congratulate you for finding this text. Finding this made you understand how this ARG works. You might find some codes secrets that use youtube links or others for websites.
+DISCLAIMER : youtube links will be under the channel wolfing_shadow, and websites will be under the domain albashaerdev.github.io/
+This ARG might also use diffrent websites.
+Goodluck! --><div class="fixed bottom-1 right-1 opacity-[0.03] pointer-events-none select-none text-[8px] max-w-[200px] text-primary terminal-text">
+        I want to congratulate you for finding this text. Finding this made you understand how this ARG works. You might find some codes secrets that use youtube links or others for websites.
+        DISCLAIMER : youtube links will be under the channel wolfing_shadow, and websites will be under the domain albashaerdev.github.io/
+        This ARG might also use diffrent websites.
+        Goodluck!
+        By the way, this is not the only way to find secret messages, you may sometimes find secret codes using decryption of cipher code, or finding links and codes hidden in videos. When you find this, message me.
+    </div></body></html>
