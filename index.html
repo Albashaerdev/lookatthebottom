@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 
-<html class="dark" lang="en"><head>
-  <title>
-    lookatthebottom
-  </title>
+<!-- 
+    01001001 00100000 01110111 01100001 01101110 01110100 00100000 01110100 01101111 00100000 01100011 01101111 01101110 01100111 01110010 01100001 01110100 01110101 01101100 01100001 01110100 01100101 
+    00100000 01111001 01101111 01110101 00100000 01100110 01101111 01110010 00100000 01100110 01101001 01101110 01100100 01101001 01101110 01100111 00100000 01110100 01101000 01101001 01110011 00101110 
+    01000111 01001111 01000001 01010100 00110010
+--><html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ARENA | ARCHIVE_CORRUPTION_PORTAL</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&amp;family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script id="tailwind-config">
       tailwind.config = {
         darkMode: "class",
@@ -16,6 +18,7 @@
           extend: {
             colors: {
               "primary": "#00FF41",
+              "secondary": "#00e3fd",
               "background": "#0c0e17",
               "surface": "#11131d",
               "on-surface": "#f0f0fd",
@@ -31,138 +34,544 @@
       }
     </script>
 <style>
-      body {
-        background-color: #0c0e17;
-        position: relative;
-        overflow: hidden;
-      }
-      
-      /* Scanline Effect */
-      body::before {
-        content: " ";
-        display: block;
-        position: absolute;
-        top: 0;
-        left: 0;
-        bottom: 0;
-        right: 0;
-        background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-        z-index: 100;
-        background-size: 100% 2px, 3px 100%;
-        pointer-events: none;
-      }
+        body {
+            background-color: #0c0e17;
+            position: relative;
+            overflow: hidden;
+            height: 100vh;
+        }
+        
+        /* Scanline Effect */
+        body::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(0, 255, 65, 0.03), rgba(0, 255, 65, 0.01), rgba(0, 255, 65, 0.03));
+            z-index: 100;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
 
-      /* Subtle Glitch Animation */
-      @keyframes scanline {
-        0% { transform: translateY(-100%); }
-        100% { transform: translateY(100%); }
-      }
-      .scanline-move {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100px;
-        background: linear-gradient(to bottom, transparent, rgba(0, 255, 65, 0.05), transparent);
-        opacity: 0.1;
-        animation: scanline 8s linear infinite;
-        pointer-events: none;
-        z-index: 99;
-      }
+        /* Heartbeat Animations */
+        @keyframes heartbeat-text {
+            0%, 100% { opacity: 0.8; letter-spacing: -0.05em; }
+            50% { opacity: 1; letter-spacing: -0.02em; }
+        }
+        @keyframes heartbeat-log {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.5; }
+        }
+        
+        .pulse-text { animation: heartbeat-text 4s infinite ease-in-out; }
+        .pulse-log { animation: heartbeat-log 4s infinite ease-in-out; }
 
-      .terminal-text {
-        text-shadow: 0 0 5px rgba(0, 255, 65, 0.5);
-      }
-      
-      .glitch-hover:hover {
-        animation: glitch 0.3s cubic-bezier(.25,.46,.45,.94) both infinite;
-      }
+        @keyframes global-flash-loop {
+            0%, 94%, 100% { background-color: transparent; }
+            95% { background-color: #ffffff; }
+            97% { background-color: #00e3fd; }
+            99% { background-color: #ffffff; }
+        }
+        .flash-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            pointer-events: none;
+            display: none; 
+        }
+        /* Only active if specifically toggled or triggered */
+        .flash-active {
+            display: block;
+            animation: global-flash-loop 15s infinite;
+        }
 
-      @keyframes glitch {
-        0% { transform: translate(0); }
-        20% { transform: translate(-2px, 2px); }
-        40% { transform: translate(-2px, -2px); }
-        60% { transform: translate(2px, 2px); }
-        80% { transform: translate(2px, -2px); }
-        100% { transform: translate(0); }
-      }
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+        .scanline-move {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(to bottom, transparent, rgba(0, 255, 65, 0.05), transparent);
+            opacity: 0.1;
+            animation: scanline 8s linear infinite;
+            pointer-events: none;
+            z-index: 99;
+        }
+
+        .terminal-text {
+            text-shadow: 0 0 5px rgba(0, 255, 65, 0.5);
+        }
+        
+        .glitch-hover:hover {
+            animation: glitch 0.3s cubic-bezier(.25,.46,.45,.94) both infinite;
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+
+        /* Dynamic Visual Degradation Levels */
+        .degrade-1 { animation: glitch 2s infinite; }
+        .degrade-2 { animation: glitch 0.8s infinite; filter: contrast(1.2) hue-rotate(10deg); }
+        .degrade-3 { animation: glitch 0.4s infinite; filter: contrast(1.5) hue-rotate(30deg) saturate(2); }
+        .degrade-4 { animation: glitch 0.1s infinite; filter: contrast(2) hue-rotate(90deg) invert(0.1); }
     
-      @keyframes flicker-hint {
-        0%, 100% { opacity: 0.2; }
-        50% { opacity: 0.1; }
-        70% { opacity: 0.3; }
-        80% { opacity: 0.15; }
-      }
-      .animate-flicker-hint {
-        animation: flicker-hint 4s infinite;
-      }
+        @keyframes flicker-hint {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 0.1; }
+            70% { opacity: 0.3; }
+            80% { opacity: 0.15; }
+        }
+        .animate-flicker-hint {
+            animation: flicker-hint 4s infinite;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        .animate-shake {
+            animation: shake 0.2s ease-in-out 0s 2;
+            border-color: #ff7351 !important;
+        }
+
+        #log-container::-webkit-scrollbar {
+            width: 2px;
+        }
+        #log-container::-webkit-scrollbar-thumb {
+            background: rgba(0, 255, 65, 0.2);
+        }
     </style>
 </head>
-<body class="text-on-surface font-mono selection:bg-primary selection:text-black min-h-screen flex items-center justify-center p-6">
+<body class="text-on-surface font-mono selection:bg-primary selection:text-black transition-all duration-700" id="body-main">
+<div class="flash-overlay" id="global-flash-overlay"></div>
 <div class="scanline-move"></div>
-<!-- Centered Portal Layout -->
-<div class="max-w-2xl w-full flex flex-col items-center text-center space-y-12 relative z-10">
-<!-- Breadcrumb / Header -->
-<header class="w-full text-left">
+<!-- Audio Start Overlay (To handle Autoplay policies) -->
+<div class="fixed inset-0 z-[200] bg-black flex items-center justify-center cursor-pointer group" id="audio-init">
+<div class="text-primary text-center">
+<p class="text-xs tracking-[0.5em] mb-4 animate-pulse">SYSTEM_INITIALIZATION_REQUIRED</p>
+<button class="border border-primary px-8 py-4 hover:bg-primary hover:text-black transition-all font-black tracking-widest">CONNECT_TO_ARENA</button>
+</div>
+</div>
+<!-- Log Sidebar -->
+<div class="fixed left-6 top-1/2 -translate-y-1/2 w-64 h-2/3 border-l border-primary/10 pl-4 hidden lg:flex flex-col z-20">
+<div class="text-[10px] text-primary/40 uppercase mb-4 tracking-widest font-bold">Live_Activity_Log</div>
+<div class="flex-1 overflow-y-auto text-[9px] text-primary/30 space-y-2 font-mono scroll-smooth pulse-log" id="log-container">
+<div>&gt; CONNECTION_ESTABLISHED</div>
+<div>&gt; KERNEL_READY</div>
+</div>
+</div>
+<div class="max-w-4xl mx-auto h-full flex flex-col items-center justify-center text-center p-6 relative z-10">
+<!-- Header -->
+<header class="w-full flex justify-between items-center absolute top-12 px-6">
+<div class="flex-1">
 <p class="text-primary/60 text-sm tracking-[0.3em] font-bold uppercase terminal-text">
                 /// arena_node_04 // chess
             </p>
 <div class="h-px w-full bg-primary/20 mt-2"></div>
+</div>
+<button class="ml-6 flex items-center gap-2 text-[10px] tracking-widest uppercase font-bold text-primary/40 hover:text-primary transition-colors group" id="epilepsy-toggle" title="Toggle Photosensitivity Mode">
+<span id="epilepsy-label">PHOTOSENSITIVITY: OFF</span>
+<span class="material-symbols-outlined text-sm">settings_power</span>
+</button>
 </header>
 <!-- Main Content -->
-<main class="space-y-8 py-12">
+<main class="space-y-12 w-full max-w-2xl py-12" id="main-ui-container">
 <div>
-<h1 class="text-5xl md:text-6xl font-headline font-black text-primary italic tracking-tighter mb-6 terminal-text">
-                    ???
-                </h1>
+<h1 class="text-6xl md:text-8xl font-headline font-black text-primary italic tracking-tighter mb-6 terminal-text pulse-text" id="glitch-title">
+                ???
+            </h1>
+<p class="text-primary/40 text-[10px] tracking-[0.4em] uppercase font-bold">
+                Unauthorized access will trigger full site sterilization.
+            </p>
 </div>
 <!-- Main Action -->
-<div class="pt-4">
-<div class="mb-6 max-w-sm mx-auto"><input class="w-full bg-black/40 border border-primary/50 focus:border-primary text-primary placeholder:text-primary/30 font-mono text-center py-3 tracking-widest outline-none transition-all focus:shadow-[0_0_15px_rgba(0,255,65,0.2)] uppercase" placeholder="ENTER ACCESS CODE..." type="text"/></div><button class="px-12 py-4 bg-primary text-black font-headline font-black text-xl tracking-tighter hover:bg-white transition-all active:scale-95 glitch-hover shadow-[0_0_20px_rgba(0,255,65,0.3)]" id="join-btn">
-                    JOIN CHESS TOURNAMENT
-                </button><div class="mt-4 text-red-500 font-mono text-xs tracking-widest hidden terminal-text uppercase" id="error-message">INCORRECT CODE</div>
+<div class="pt-4 relative">
+<div class="absolute -top-10 left-0 w-full text-red-500 text-xs tracking-[0.5em] hidden font-bold animate-pulse" id="lockout-timer">
+                SYSTEM_LOCKED: RESYNC_IN <span id="timer-seconds">30</span>S
+            </div>
+<div class="mb-6 max-w-md mx-auto relative">
+<input class="w-full bg-black/60 border border-primary/30 focus:border-primary text-primary placeholder:text-primary/20 font-mono text-center py-4 px-6 tracking-widest outline-none transition-all focus:shadow-[0_0_25px_rgba(0,255,65,0.15)] uppercase text-xl disabled:opacity-50 disabled:cursor-not-allowed" id="access-input" placeholder="ENTER ACCESS CODE..." type="text"/>
+</div>
+<button class="px-16 py-5 bg-primary text-black font-headline font-black text-xl tracking-tighter hover:bg-white transition-all active:scale-95 glitch-hover shadow-[0_0_20px_rgba(0,255,65,0.3)] uppercase disabled:bg-primary/20 disabled:text-primary/40 disabled:pointer-events-none" id="execute-btn">
+                Execute_Hash
+            </button>
+<div class="mt-4 text-red-500 font-mono text-xs tracking-widest hidden terminal-text uppercase" id="error-message">
+                FATAL: INCORRECT_INJECTION_STRING
+            </div>
 </div>
 </main>
 <!-- Navigation Nodes -->
-<footer class="w-full pt-12">
-<div class="h-px w-full bg-primary/20 mb-8"></div>
-<div class="flex flex-wrap justify-center gap-8 md:gap-16">
+<footer class="w-full absolute bottom-12 px-6">
+<div class="h-px w-full bg-primary/20 mb-10"></div>
+<div class="flex flex-wrap justify-center gap-8 md:gap-16" id="footer-nodes">
 <a class="group flex flex-col items-center gap-2" href="#">
 <span class="text-primary text-xs tracking-widest uppercase">01</span>
 <span class="text-white group-hover:text-primary transition-colors text-lg font-headline font-bold italic">CHESS</span>
 <div class="h-1 w-full bg-primary scale-x-100 transition-transform"></div>
 </a>
-<a class="group flex flex-col items-center gap-2 opacity-50 hover:opacity-100 transition-opacity" href="#">
+<a class="group flex flex-col items-center gap-2 opacity-30 cursor-not-allowed transition-all duration-500" href="#" id="node-02">
 <span class="text-on-surface-variant text-xs tracking-widest uppercase">02</span>
-<span class="text-on-surface-variant group-hover:text-white transition-colors text-lg font-headline font-bold italic line-through decoration-primary decoration-2">?!@#$?ll</span>
-<div class="h-1 w-full bg-primary scale-x-0 group-hover:scale-x-100 transition-transform"></div>
+<span class="text-on-surface-variant text-lg font-headline font-bold italic line-through decoration-primary decoration-2" id="node-02-text">SECTOR_B</span>
+<div class="h-1 w-full bg-primary scale-x-0 transition-transform underline-element"></div>
 </a>
-<a class="group flex flex-col items-center gap-2 opacity-50 hover:opacity-100 transition-opacity" href="#">
+<a class="group flex flex-col items-center gap-2 opacity-30 cursor-not-allowed transition-all duration-500" href="#" id="node-03">
 <span class="text-on-surface-variant text-xs tracking-widest uppercase">03</span>
-<span class="text-on-surface-variant group-hover:text-white transition-colors text-lg font-headline font-bold italic line-through decoration-primary decoration-2">!$#%?!@#ll</span>
-<div class="h-1 w-full bg-primary scale-x-0 group-hover:scale-x-100 transition-transform"></div>
+<span class="text-on-surface-variant text-lg font-headline font-bold italic line-through decoration-primary decoration-2" id="node-03-text">SECTOR_C</span>
+<div class="h-1 w-full bg-primary scale-x-0 transition-transform underline-element"></div>
 </a>
-<a class="group flex flex-col items-center gap-2" href="#"><span class="text-primary text-xs tracking-widest uppercase">04</span><span class="text-white group-hover:text-primary transition-colors text-lg font-headline font-bold italic">???</span><div class="h-1 w-full bg-primary scale-x-100 transition-transform"></div></a></div>
-<div class="mt-16 text-[10px] text-primary/30 uppercase tracking-[0.5em] font-bold">
-                connection_stable // status_online
-            </div><div class="mt-4 text-[9px] text-primary/20 uppercase tracking-[0.3em] font-mono animate-flicker-hint">
-                DEEP_SCAN_REQUIRED: INSPECT_ELEMENT_FOR_LOGS
+<a class="group flex flex-col items-center gap-2" href="#">
+<span class="text-primary text-xs tracking-widest uppercase">04</span>
+<span class="text-white group-hover:text-primary transition-colors text-lg font-headline font-bold italic">???</span>
+<div class="h-1 w-full bg-primary scale-x-100 transition-transform"></div>
+</a>
+</div>
+<!-- Progress and Status -->
+<div class="mt-16 flex flex-col items-center gap-4">
+<div class="text-primary font-bold text-sm tracking-[0.5em]" id="progress-indicator">
+                (<span id="codes-found">0</span>/4)
             </div>
+<div class="flex flex-col items-center gap-2">
+<div class="text-[10px] text-primary/30 uppercase tracking-[0.5em] font-bold">
+                    connection_stable // status_online
+                </div>
+<div class="text-[9px] text-primary/20 uppercase tracking-[0.3em] font-mono animate-flicker-hint">
+                    DEEP_SCAN_REQUIRED: INSPECT_ELEMENT_FOR_LOGS
+                </div>
+</div>
+</div>
 </footer>
 </div>
+<!-- Corruption Overlay -->
+<div class="fixed inset-0 bg-white z-[100] hidden flex-col items-center justify-center pointer-events-none" id="corruption-overlay">
+<div class="text-black font-black font-headline text-4xl md:text-8xl italic tracking-tighter uppercase text-center px-10" id="corruption-text">
+        IT CANNOT BE UNDONE
+    </div>
+<div class="absolute inset-0 bg-gradient-to-t from-secondary/50 via-transparent to-transparent mix-blend-overlay"></div>
+</div>
 <script>
-  document.getElementById('join-btn').addEventListener('click', function() {
-    const errorMsg = document.getElementById('error-message');
-    errorMsg.classList.remove('hidden');
-    // Optional: Add a shake effect if desired, but request just asked for the message
-  });
-</script><!-- I want to congratulate you for finding this text. Finding this made you understand how this ARG works. You might find some codes secrets that use youtube links or others for websites.
-DISCLAIMER : youtube links will be under the channel wolfing_shadow, and websites will be under the domain albashaerdev.github.io/
-This ARG might also use diffrent websites.
-Goodluck! --><div class="fixed bottom-1 right-1 opacity-[0.03] pointer-events-none select-none text-[8px] max-w-[200px] text-primary terminal-text">
-        I want to congratulate you for finding this text. Finding this made you understand how this ARG works. You might find some codes secrets that use youtube links or others for websites.
-        DISCLAIMER : youtube links will be under the channel wolfing_shadow, and websites will be under the domain albashaerdev.github.io/
-        This ARG might also use diffrent websites.
-        Goodluck!
-        By the way, this is not the only way to find secret messages, you may sometimes find secret codes using decryption of cipher code, or finding links and codes hidden in videos. When you find this, message me.
-    </div></body></html>
+    const input = document.getElementById('access-input');
+    const button = document.getElementById('execute-btn');
+    const errorMessage = document.getElementById('error-message');
+    const overlay = document.getElementById('corruption-overlay');
+    const corruptionText = document.getElementById('corruption-text');
+    const globalFlash = document.getElementById('global-flash-overlay');
+    const epilepsyToggle = document.getElementById('epilepsy-toggle');
+    const epilepsyLabel = document.getElementById('epilepsy-label');
+    const codesFoundSpan = document.getElementById('codes-found');
+    const logContainer = document.getElementById('log-container');
+    const audioInit = document.getElementById('audio-init');
+    const mainTitle = document.getElementById('glitch-title');
+    const bodyMain = document.getElementById('body-main');
+
+    const validCodes = ['W0RLD2026', 'G0AT2', 'HAPPY'];
+    const totalCodesToFind = 4;
+    let unlockedCodes = new Set();
+    let epilepsyMode = false;
+    let failedAttempts = 0;
+    let isLocked = false;
+
+    // Audio System
+    let audioCtx;
+    let mainOsc;
+    let subOsc;
+    let lfo;
+    let lfoGain;
+    let gainNode;
+    let biquadFilter;
+    let distortionNode;
+
+    function makeDistortionCurve(amount) {
+        var k = typeof amount === 'number' ? amount : 50,
+            n_samples = 44100,
+            curve = new Float32Array(n_samples),
+            deg = Math.PI / 180,
+            i = 0,
+            x;
+        for ( ; i < n_samples; ++i ) {
+            x = i * 2 / n_samples - 1;
+            curve[i] = ( 3 + k ) * x * 20 * deg / ( Math.PI + k * Math.abs(x) );
+        }
+        return curve;
+    };
+
+    function initAudio() {
+        if (audioCtx) return;
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        mainOsc = audioCtx.createOscillator();
+        subOsc = audioCtx.createOscillator();
+        lfo = audioCtx.createOscillator();
+        lfoGain = audioCtx.createGain();
+        gainNode = audioCtx.createGain();
+        biquadFilter = audioCtx.createBiquadFilter();
+        distortionNode = audioCtx.createWaveShaper();
+
+        mainOsc.type = 'sawtooth';
+        mainOsc.frequency.setValueAtTime(40, audioCtx.currentTime); 
+        
+        subOsc.type = 'sine';
+        subOsc.frequency.setValueAtTime(20, audioCtx.currentTime);
+
+        lfo.type = 'sine';
+        lfo.frequency.setValueAtTime(0.5, audioCtx.currentTime);
+        lfoGain.gain.setValueAtTime(10, audioCtx.currentTime);
+
+        distortionNode.curve = makeDistortionCurve(0);
+        distortionNode.oversample = '4x';
+
+        gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime);
+        
+        biquadFilter.type = 'lowpass';
+        biquadFilter.frequency.setValueAtTime(150, audioCtx.currentTime);
+
+        // Routing
+        lfo.connect(lfoGain);
+        lfoGain.connect(mainOsc.frequency);
+        
+        mainOsc.connect(distortionNode);
+        subOsc.connect(distortionNode);
+        distortionNode.connect(biquadFilter);
+        biquadFilter.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        
+        mainOsc.start();
+        subOsc.start();
+        lfo.start();
+
+        audioInit.classList.add('hidden');
+        addLog("SYSTEM_AUDIO_ENGAGED");
+    }
+
+    audioInit.addEventListener('click', initAudio);
+
+    function updateSystemStatus(count) {
+        if (!audioCtx) return;
+        
+        // Audio shifts
+        const baseFreq = 40 + (count * 15);
+        const newGain = 0.08 + (count * 0.04);
+        const filterFreq = 150 + (count * 200);
+        const lfoSpeed = 0.5 + (count * 2);
+        const distortionAmount = count * 100;
+
+        mainOsc.frequency.exponentialRampToValueAtTime(baseFreq, audioCtx.currentTime + 1.5);
+        subOsc.frequency.exponentialRampToValueAtTime(baseFreq/2, audioCtx.currentTime + 1.5);
+        gainNode.gain.linearRampToValueAtTime(newGain, audioCtx.currentTime + 1.5);
+        biquadFilter.frequency.exponentialRampToValueAtTime(filterFreq, audioCtx.currentTime + 1.5);
+        lfo.frequency.linearRampToValueAtTime(lfoSpeed, audioCtx.currentTime + 1.5);
+        distortionNode.curve = makeDistortionCurve(distortionAmount);
+
+        // Visual "Heartbeat" speed up
+        const pulseSpeed = Math.max(0.5, 4 - (count * 0.8));
+        const pulseTextElements = document.querySelectorAll('.pulse-text');
+        const pulseLogElements = document.querySelectorAll('.pulse-log');
+        
+        pulseTextElements.forEach(el => el.style.animationDuration = `${pulseSpeed}s`);
+        pulseLogElements.forEach(el => el.style.animationDuration = `${pulseSpeed}s`);
+    }
+
+    // Logs System
+    const logMessages = [
+        "PACKET_SNIFFED: %ID%",
+        "UNAUTHORIZED_PING_DETECTED",
+        "BUFFER_OVERFLOW_PREVENTED",
+        "ENCRYPTED_STREAM_DECODING...",
+        "NODE_O4_HEARTBEAT_STABLE",
+        "DATA_LEAK_IN_SECTOR_7",
+        "SHADOW_ADMIN_ACTIVE",
+        "PARSING_ARENA_RECORDS",
+        "VOID_BREACH_DETECTED",
+        "RECALIBRATING_SENSORS"
+    ];
+
+    function addLog(msg) {
+        const div = document.createElement('div');
+        const time = new Date().toLocaleTimeString('en-GB', { hour12: false });
+        div.innerText = `[${time}] > ${msg}`;
+        logContainer.appendChild(div);
+        logContainer.scrollTop = logContainer.scrollHeight;
+        if (logContainer.children.length > 50) logContainer.removeChild(logContainer.firstChild);
+    }
+
+    setInterval(() => {
+        if (Math.random() > 0.7) {
+            const msg = logMessages[Math.floor(Math.random() * logMessages.length)]
+                .replace("%ID%", Math.random().toString(16).slice(2, 8).toUpperCase());
+            addLog(msg);
+        }
+    }, 4000);
+
+    // Lockout System
+    function triggerLockout() {
+        isLocked = true;
+        failedAttempts = 0;
+        input.disabled = true;
+        button.disabled = true;
+        document.getElementById('lockout-timer').classList.remove('hidden');
+        addLog("CRITICAL: SECURITY_LOCKOUT_ENGAGED");
+        
+        let timeLeft = 30;
+        const timerSpan = document.getElementById('timer-seconds');
+        
+        const interval = setInterval(() => {
+            timeLeft--;
+            timerSpan.innerText = timeLeft;
+            if (timeLeft <= 0) {
+                clearInterval(interval);
+                isLocked = false;
+                input.disabled = false;
+                button.disabled = false;
+                document.getElementById('lockout-timer').classList.add('hidden');
+                addLog("LOCKOUT_EXPIRED: RETRY_ALLOWED");
+            }
+        }, 1000);
+    }
+
+    const messages = [
+        "IRREVERSIBLE_ACTION_TRIGGERED",
+        "SYSTEM_SOUL_LOST",
+        "VOID_CONSUMPTION_INITIATED",
+        "HISTORY_IS_BEING_REWRITTEN",
+        "THE_ARCHIVE_IS_BLEEDING",
+        "THEY_ARE_WATCHING_THE_SHIFT",
+        "SEQUENCE_INITIATED",
+        "THE_ARENA_REMEMBERS_NOTHING",
+        "SANITIZATION_IN_PROGRESS",
+        "THE_GLITCH_IS_THE_CURE"
+    ];
+
+    // Epilepsy Toggle Logic
+    epilepsyToggle.addEventListener('click', () => {
+        epilepsyMode = !epilepsyMode;
+        if (epilepsyMode) {
+            globalFlash.classList.add('flash-active');
+            epilepsyLabel.innerText = "PHOTOSENSITIVITY: ON";
+            epilepsyToggle.classList.remove('text-primary/40');
+            epilepsyToggle.classList.add('text-primary');
+            addLog("ALERT: PHOTOSENSITIVITY_MODE_ENABLED");
+        } else {
+            globalFlash.classList.remove('flash-active');
+            epilepsyLabel.innerText = "PHOTOSENSITIVITY: OFF";
+            epilepsyToggle.classList.add('text-primary/40');
+            epilepsyToggle.classList.remove('text-primary');
+            addLog("STABILIZED: PHOTOSENSITIVITY_MODE_DISABLED");
+        }
+    });
+
+    button.addEventListener('click', () => {
+        if (isLocked) return;
+        const val = input.value.trim().toUpperCase();
+        
+        if (validCodes.includes(val)) {
+            if (unlockedCodes.has(val)) {
+                errorMessage.classList.add('hidden');
+                input.value = "";
+                addLog("DUPLICATE_KEY_REJECTED: " + val);
+                return;
+            }
+
+            errorMessage.classList.add('hidden');
+            unlockedCodes.add(val);
+            const count = Math.min(unlockedCodes.size, totalCodesToFind);
+            codesFoundSpan.innerText = count;
+            failedAttempts = 0;
+
+            addLog("SUCCESS: HASH_ACCEPTED_VAL_" + val);
+            applyVisualDegradation(count);
+            updateSystemStatus(count);
+            triggerCorruption();
+            unlockNodes(count);
+        } else {
+            failedAttempts++;
+            addLog("FAILURE: INVALID_HASH_ATTEMPT_" + failedAttempts);
+            errorMessage.classList.remove('hidden');
+            input.classList.add('animate-shake');
+            setTimeout(() => input.classList.remove('animate-shake'), 500);
+            
+            if (failedAttempts >= 3) {
+                triggerLockout();
+            }
+        }
+    });
+
+    function applyVisualDegradation(count) {
+        mainTitle.classList.remove('degrade-1', 'degrade-2', 'degrade-3', 'degrade-4');
+        bodyMain.classList.remove('degrade-1', 'degrade-2', 'degrade-3', 'degrade-4');
+        
+        if (count > 0) {
+            const className = `degrade-${count}`;
+            mainTitle.classList.add(className);
+            bodyMain.classList.add(className);
+        }
+    }
+
+    function unlockNodes(count) {
+        const node2 = document.getElementById('node-02');
+        const node3 = document.getElementById('node-03');
+        
+        const nodesToUnlock = [];
+        if (count >= 1) nodesToUnlock.push(node2);
+        if (count >= 2) nodesToUnlock.push(node3);
+
+        nodesToUnlock.forEach(node => {
+            if (!node.classList.contains('cursor-not-allowed')) return;
+            node.classList.remove('opacity-30', 'cursor-not-allowed');
+            node.classList.add('opacity-50', 'hover:opacity-100');
+            
+            const textSpan = node.querySelector('span:nth-child(2)');
+            if (textSpan) textSpan.classList.remove('line-through');
+            
+            const underline = node.querySelector('.underline-element');
+            if (underline) {
+                underline.classList.replace('scale-x-0', 'group-hover:scale-x-100');
+            }
+        });
+    }
+
+    function triggerCorruption() {
+        corruptionText.innerText = messages[Math.floor(Math.random() * messages.length)];
+        overlay.classList.remove('hidden');
+        overlay.classList.add('flex');
+        
+        let i = 0;
+        const maxTicks = 40;
+        
+        const interval = setInterval(() => {
+            // Flashing sequence during corruption always happens regardless of toggle for dramatic effect
+            // but it's restricted to this short sequence.
+            overlay.style.backgroundColor = i % 2 === 0 ? '#ffffff' : '#00e3fd';
+            corruptionText.style.color = i % 2 === 0 ? '#000000' : '#ffffff';
+            
+            corruptionText.style.transform = `scale(${1 + (Math.random() * 0.3)}) skew(${Math.random() * 15}deg)`;
+            
+            i++;
+            if (i > maxTicks) {
+                clearInterval(interval);
+                overlay.classList.add('hidden');
+                overlay.classList.remove('flex');
+                overlay.style.backgroundColor = '';
+                overlay.style.opacity = '';
+                input.value = "";
+                
+                if (epilepsyMode) {
+                    document.body.style.filter = `hue-rotate(${Math.random() * 360}deg)`;
+                }
+            }
+        }, 40);
+    }
+</script>
+</body></html>
